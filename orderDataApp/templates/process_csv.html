@@ -22,59 +22,131 @@ prcessing: csv data
             Data successfully extracted and shown below
         </div>   
 
-        
+        <div class="buttons-div" > 
         <button type="button" class="btn btn-outline-danger btn-lg" href="#">Discard</button>
         <button type="button" class="btn btn-outline-success btn-lg" href="#"> Update data</button>
+        </div>
 
-        <div>
-            <p> {{ summary }} To view raw data, click <a target="_blank" href="{% url 'show_data' %}"> here</a></p>
-            
-            <table id="seller-data-table" class="table table-sm table-striped table-bordered display" style="width:100%">
-                <thead>
-                    <tr>        
-    
-                        <th> No.</th>
-                        <th> Seller Uid </th>
-                        <th> Seller Code </th>
-                        <th> Seller Name</th>
-                        <th> Seller Company</th>
-                        <th> Seller Email</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in seller_data_list %}
-                        <tr> 
-                            <td>{{ forloop.counter}}</td>
-                            <td> {{ item|key_to_value:"Order Item Seller Uid" }} </td>
-                            <td> {{ item|key_to_value:"Order Item Seller Code" }}</td>
-                            <td> {{ item|key_to_value:"Order Item Seller Name" }} </td>
-                            <td> {{ item|key_to_value:"Order Item Seller Company" }}  </td>
-                            <td> {{ item|key_to_value:"Order Item Seller Email" }} </td>
+        <div class="update-preview">
+            <div class="summary-div">
+                <p> {{ summary }} To view raw data, click <a target="_blank" href="{% url 'show_data' %}"> here</a></p>
+            </div>
+            <!-- div container for order data table-->
+            <div class="order-table-container">  
+                <div class="table-caption" > Summary of extracted order data</div>
+
+                <table id="order-data-table" class="table table-sm table-striped table-bordered display" style="width:100%">
+                    <thead>
+                        <tr>        
+        
+                            <th> No.</th>
+                            <th> Order No. </th>
+                            <th> Customer Name </th>
+                            <th> Customer Email</th>
+                            <th> Order Total</th>
+                            <th> Shipping Total</th>
+                            <th> Checkout Total</th>
+                            <th> Amount Paid</th>
+                            <th> Payment Processing fee</th>
+                            <th> Payment Accepted</th>
+                            <th> Order Status</th>
+                            
                         </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>        
-    
-                        <th> No.</th>
-                        <th> Seller Uid </th>
-                        <th> Seller Code </th>
-                        <th> Seller Name</th>
-                        <th> Seller Company</th>
-                        <th> Seller Email</th>
-                        
-                    </tr>
-                </tfoot>
+                    </thead>
 
-            </table> 
+                    <tbody>
+                        {% for item in order_data %}
+                            <tr> 
+                                <td>{{ forloop.counter}}</td>
+                                <td> {{ item|key_to_value:"Order Number" }} </td>
+                                <td> {{ item|key_to_value:"Customer Name" }}</td>
+                                <td> {{ item|key_to_value:"Customer Email" }} </td>
+                                <td> {{ item|key_to_value:"Order Total" }}  </td>
+                                <td> {{ item|key_to_value:"Order Shipping" }} </td>
+                                <td> {{ item|key_to_value:"Order Cart Total" }} </td>
+                                <td> {{ item|key_to_value:"Payment Amount" }} </td>
+                                <td> {{ item|key_to_value:"Payment Fee" }} </td>
+                                <td> {{ item|key_to_value:"Payment Successful" }} </td>
+                                <td> {{ item|key_to_value:"Order Status" }} </td>
+
+                            </tr>
+                        {% endfor %}
+
+                    </tbody>
+                    <tfoot>
+                        <tr>        
+        
+                            <th> No.</th>
+                            <th> Order No. </th>
+                            <th> Customer Name </th>
+                            <th> Customer Email</th>
+                            <th> Order Total</th>
+                            <th> Shipping Total</th>
+                            <th> Checkout Total</th>
+                            <th> Amount Paid</th>
+                            <th> Payment Processing fee</th>
+                            <th> Payment Accepted</th>
+                            <th> Order Status</th>
+                            
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div> <!--order data ends here -->
+
+            <!-- div container for seller data table-->
+            <div class="seller-table-container"> 
+                <div class="table-caption"> Summary of extracted seller data</div>
+                
+                <table id="seller-data-table" class="table table-sm table-striped table-bordered display" style="width:100%">
+                    
+                    <thead>
+                        <tr>        
+        
+                            <th> No.</th>
+                            <th> Seller Uid </th>
+                            <th> Seller Code </th>
+                            <th> Seller Name</th>
+                            <th> Seller Company</th>
+                            <th> Seller Email</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in seller_data_list %}
+                            <tr> 
+                                <td>{{ forloop.counter}}</td>
+                                <td> {{ item|key_to_value:"Order Item Seller Uid" }} </td>
+                                <td> {{ item|key_to_value:"Order Item Seller Code" }}</td>
+                                <td> {{ item|key_to_value:"Order Item Seller Name" }} </td>
+                                <td> {{ item|key_to_value:"Order Item Seller Company" }}  </td>
+                                <td> {{ item|key_to_value:"Order Item Seller Email" }} </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>        
+        
+                            <th> No.</th>
+                            <th> Seller Uid </th>
+                            <th> Seller Code </th>
+                            <th> Seller Name</th>
+                            <th> Seller Company</th>
+                            <th> Seller Email</th>
+                            
+                        </tr>
+                    </tfoot>
+
+                </table> 
+            
+            </div><!-- seller data container ends-->
                     
                     
         </div>
             
     {% else %}
         <div class="alert alert-danger">
-            {{ err_msg }} Please <a href="{% url 'upload_csv_file' %}">retry</a>
+            {{ err_msg }} <a href="{% url 'upload_csv_file' %}">Retry</a>
             
         </div>
     
@@ -87,6 +159,12 @@ prcessing: csv data
     
     <script src="https://code.jquery.com/jquery-3.5.1.js"> </script>      
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#order-data-table').DataTable();
+        } );
+
+    </script>
     <script>
         $(document).ready(function() {
             $('#seller-data-table').DataTable();

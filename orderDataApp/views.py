@@ -25,14 +25,14 @@ def upload_csv_file(request):
 
             # return HttpResponse(request.FILES['csv_file'])
             #handle_uploaded_file(request.FILES['file'])
-            return HttpResponseRedirect('/update_data/')
+            return HttpResponseRedirect('/extract_data/')
     else:
         form = CsvUploadForm()
     return render(request, 'loadcsv.html', {'form': form})
 
 
 
-def update_data(request):
+def extract_data(request):
     
     
     try:
@@ -54,6 +54,9 @@ def update_data(request):
 
 def show_data (request):
     return HttpResponse(request.session['order_data'])
+
+
+
 
 
 # ************** ordinary method calls **************
