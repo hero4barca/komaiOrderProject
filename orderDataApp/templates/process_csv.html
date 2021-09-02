@@ -1,0 +1,98 @@
+{% extends "base_template.html" %}
+
+{% block page_css%}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+
+{% endblock%}
+
+{% block title %}
+prcessing: csv data
+{% endblock %}
+
+{% block content %}
+{% load app_extras %}
+<div class="process_csv">
+
+    
+    
+    {%  if err_msg == False %}
+
+        <div class="alert alert-success">
+            Data successfully extracted and shown below
+        </div>   
+
+        
+        <button type="button" class="btn btn-outline-danger btn-lg" href="#">Discard</button>
+        <button type="button" class="btn btn-outline-success btn-lg" href="#"> Update data</button>
+
+        <div>
+            <p> {{ summary }} To view raw data, click <a target="_blank" href="{% url 'show_data' %}"> here</a></p>
+            
+            <table id="seller-data-table" class="table table-sm table-striped table-bordered display" style="width:100%">
+                <thead>
+                    <tr>        
+    
+                        <th> No.</th>
+                        <th> Seller Uid </th>
+                        <th> Seller Code </th>
+                        <th> Seller Name</th>
+                        <th> Seller Company</th>
+                        <th> Seller Email</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in seller_data_list %}
+                        <tr> 
+                            <td>{{ forloop.counter}}</td>
+                            <td> {{ item|key_to_value:"Order Item Seller Uid" }} </td>
+                            <td> {{ item|key_to_value:"Order Item Seller Code" }}</td>
+                            <td> {{ item|key_to_value:"Order Item Seller Name" }} </td>
+                            <td> {{ item|key_to_value:"Order Item Seller Company" }}  </td>
+                            <td> {{ item|key_to_value:"Order Item Seller Email" }} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>        
+    
+                        <th> No.</th>
+                        <th> Seller Uid </th>
+                        <th> Seller Code </th>
+                        <th> Seller Name</th>
+                        <th> Seller Company</th>
+                        <th> Seller Email</th>
+                        
+                    </tr>
+                </tfoot>
+
+            </table> 
+                    
+                    
+        </div>
+            
+    {% else %}
+        <div class="alert alert-danger">
+            {{ err_msg }} Please <a href="{% url 'upload_csv_file' %}">retry</a>
+            
+        </div>
+    
+    {%  endif %}
+
+</div>
+{% endblock %}
+
+{% block javascript_block %}
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js"> </script>      
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#seller-data-table').DataTable();
+        } );
+
+    </script>
+    
+    
+{% endblock %}

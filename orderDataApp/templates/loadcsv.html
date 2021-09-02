@@ -1,0 +1,16 @@
+{% extends "base_template.html" %}
+{% block title %}
+
+{% endblock %}
+{% block content %}
+<div class="">
+    
+    {% load crispy_forms_tags %}
+    <form action="/upload_csv_file/" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <input type="submit" value="Submit">
+    </form>
+    
+</div>
+{% endblock %}
