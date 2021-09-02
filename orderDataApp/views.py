@@ -46,7 +46,7 @@ def extract_data(request):
 
 
 
-    return render (request, 'process_csv.html', {'err_msg':err_msg,
+    return render (request, 'extract_csv.html', {'err_msg':err_msg,
                                                   "summary": summary,
                                                   'seller_data_list': seller_data_list,
                                                   'order_data': order_data  
