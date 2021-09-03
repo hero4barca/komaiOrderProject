@@ -23,14 +23,15 @@ prcessing: csv data
         </div>   
 
         <div class="buttons-div" > 
-        <button type="button" class="btn btn-outline-danger btn-lg" href="#">Discard</button>
-        <button type="button" class="btn btn-outline-success btn-lg" href="#"> Update data</button>
+        <a class="btn btn-outline-danger btn-lg" href="{% url 'home' %}">Discard</a>
+        <a class="btn btn-outline-success btn-lg" href="{% url 'update_data' %}"> Update data</a>
         </div>
-
+        
         <div class="update-preview">
             <div class="summary-div">
                 <p> {{ summary }} To view raw data, click <a target="_blank" href="{% url 'show_data' %}"> here</a></p>
             </div>
+            <hr/>
             <!-- div container for order data table-->
             <div class="order-table-container">  
                 <div class="table-caption" > Summary of extracted order data</div>

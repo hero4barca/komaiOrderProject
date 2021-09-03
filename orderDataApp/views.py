@@ -56,6 +56,11 @@ def show_data (request):
     return HttpResponse(request.session['order_data'])
 
 
+def update_data (request):
+    return HttpResponse(request.session['order_data'])
+
+
+
 
 
 
