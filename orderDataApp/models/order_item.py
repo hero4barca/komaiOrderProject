@@ -21,5 +21,12 @@ class OrderItem(models.Model):
 
 
 
+class OrderItemNote(models.Model):
+
+    pass
+
+
+
+
 
     
