@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 
 
-class OrderItems(models.Model):
+class OrderItem(models.Model):
 
     item_uid = models.CharField(max_length=20)
     item_quantity = models.CharField(max_length=20)

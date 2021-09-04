@@ -1,3 +1,3 @@
 from .order import Order
-from .order_items import OrderItems
+from .order_item import OrderItem
 
