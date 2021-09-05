@@ -11,10 +11,16 @@ class Seller(models.Model):
     seller_email = models.CharField(max_length=20)
     
 
+class BankAccountDetails(models.Model):
+    Seller = models.ForeignKey(Seller, on_delete=models.RESTRICT) 
+
+    pass
 
 class SellerDetail(models.Model):
 
-    Seller = models.ForeignKey(Seller, on_delete=models.RESTRICT) 
+    Seller = models.OneToOneField(Seller, on_delete=models.RESTRICT) 
     active = models.BooleanField(default=True)
     notes = models.TextField()
+    uncleared_balance = models.DecimalField(decimal_places=2, max_digits=10, default=0.00)
+    bank_account = models.
     

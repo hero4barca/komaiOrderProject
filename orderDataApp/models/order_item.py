@@ -18,11 +18,15 @@ class OrderItem(models.Model):
     item_tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
     item_sub_total = models.DecimalField(max_digits=10, decimal_places=2)
 
+    seller_cleared = models.BinaryField(default=False) # if the transaction balance has been cleared with the seller
+
+
 
 
 
 class OrderItemNote(models.Model):
-
+    notes = models.TextField()
+    added_by = models.ForeignKey(User)
     pass
 
 
