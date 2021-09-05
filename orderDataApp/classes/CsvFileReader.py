@@ -1,4 +1,8 @@
+""" Implements Class to read the csv Order exports from sellacious 
+File format and keys are based on sellacious CSV defined columns names
+Uses python csv.Dictreader to transform data into lsit of dictionaries
 
+"""
 import csv
 import copy
 

@@ -1,5 +1,12 @@
+import datetime
+
+
 from django.db import models
+from django.contrib.auth.models import User
 from django.conf import settings
+from django.db.models.deletion import CASCADE, PROTECT, RESTRICT
+
+
 
 
 class OrderItem(models.Model):
@@ -26,8 +33,10 @@ class OrderItem(models.Model):
 
 class OrderItemNote(models.Model):
     notes = models.TextField()
-    added_by = models.ForeignKey(User)
-    pass
+    added_by = models.ForeignKey(User, on_delete=RESTRICT)
+    order_item = models.ForeignKey(OrderItem, on_delete=CASCADE)
+    date_time = models.DateTimeField(default= datetime.datetime.now)
+    
 
 
 
