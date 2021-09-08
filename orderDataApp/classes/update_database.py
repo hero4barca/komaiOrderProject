@@ -1,6 +1,10 @@
 import datetime
+import copy
 
 from decimal import Decimal
+from orderDataApp.models import seller
+
+from django.db.models.fields import PositiveBigIntegerField
 
 class UpdateDatabase:
 
@@ -15,10 +19,24 @@ class UpdateDatabase:
 
         for row in self.order_data:
 
-            new_order, error, error_list =self.create_order(row) 
+            new_order =self.create_order(row) 
+
+            
+            order_items = row['order_items']
+            new_order_items_obj_list , items_sellers= self.create_order_items(order_items)
+
+            new_sellers_obj_list = self.create_seller(items_sellers)
+            
+            
+            #check for row break error 
+                #True -> don's save objects to DB
+                # False -> unwrap dicts and save objects to DB if the
+                        # use new method
 
 
     def create_order(self, row):
+        """Creates an order object corresponding to the Order model
+        """
 
         order_dict = {}
         #error = False
@@ -27,7 +45,6 @@ class UpdateDatabase:
         #break_err= False
         #break_err_list = []
 
-    
         order_number = row["Order Number"]
         order_dict["order_number"] = order_number
 
@@ -46,7 +63,6 @@ class UpdateDatabase:
         # assign date,time to dict        
         order_dict["order_date"] = order_date 
         order_time["order_time"] = order_time
-
 
         order_dict["customer_uid"] = row["Customer Uid"]
         order_dict["customer_name"] = row["Customer Name"]
@@ -68,7 +84,6 @@ class UpdateDatabase:
         order_dict["shipping_country"]  = row["Ship To Country"]
         order_dict["shipping_phone_No"]  = row["Ship To Mobile"]
 
-
         order_dict["order_currency"] = row["Order Currency"]
 
         # convert order total to decimal
@@ -76,8 +91,7 @@ class UpdateDatabase:
                                                                     "Order Total", True)
         order_dict["order_total"]  = order_total 
         self.update_row_err(total_err,total_err_msg)
-
-        
+ 
         #convert order_taxes to decimal 
         order_taxes, order_taxes_err, order_taxes_err_msg = self.str_to_decimal(order_number, 
                                                                             row["Order Taxes"], 
@@ -155,35 +169,129 @@ class UpdateDatabase:
         order_dict["payment_amount"]  = order_payment_amt 
         self.update_row_err(order_payment_amt_err, order_payment_amt_err_msg)
 
-
         order_dict["order_coupon_code"]  = row["Order Coupon Code"] 
-
         order_dict["order_status"]  = row["Order Status"]
 
-
         order_dict["payment_method"]  = row["Payment Method"]
-        order_dict["payment_live"]  = row["Payment Is Live"]
         order_dict["payment_response"]  = row["Payment Response"]
 
+        # Translate Yes/NO to True/false
+        if row["Payment Is Live"] == "No":
+            order_dict["payment_live"]  = False
+        else:
+            order_dict["payment_live"]  = True
 
         # translate {Yes/No} to True/False
         if row["Payment Successful"] == "Yes":
             order_dict["payment_successful"]  = True
         else:
             order_dict["payment_successful"]  = False
-
-
         
         return order_dict # , error, error_list
 
-        
-    def create_order_item(self):
-        pass
 
-    def create_seller(self):
-        pass
 
+    def create_order_items(self, order_items_list):
+        """Creates a list of order items corresponding to the Order Items model
+        @param order_items_list: raw list of order items from csv 
+        @return item_obj_list: list of dict objects corresponding to the definition of the order_item model
+        """
+
+        item_obj_list =[]
+        seller_list = []
+
+        new_item = {}
+       
+        for item in order_items_list: # loop through items in the list
     
+            new_item['item_uid'] = order_items_list["Order Item Item Uid"]
+
+            # cast quantity to integer and assign
+            item_quantity_str = order_items_list["Order Item Quantity"]
+            if str.isdigit(item_quantity_str):
+                new_item['item_quantity'] = int(item_quantity_str)
+            else:
+               new_item['item_quantity'] = 0
+            
+            new_item['item_product_id'] = order_items_list["Order Item Product Id"]
+            new_item['item_product_type'] = order_items_list["Order Item Product Type"]
+            new_item['item_product_title'] = order_items_list["Order Item Product Title"]
+            
+            # cast return_days to integer and assign
+            item_return_days_str = order_items_list["Order Item Return Days"]
+            if str.isdigit(item_return_days_str):
+                new_item['item_return_days'] = int(item_return_days_str)
+            else:
+               new_item['item_return_days'] = 0
+
+            # cast exchnage_days to integer and assign
+            item_exchange_days_str = order_items_list["Order Item Exchange Days"]
+            if str.isdigit(item_exchange_days_str):
+                new_item['item_exchange_days'] = int(item_exchange_days_str)
+            else:
+               new_item['item_exchange_days'] = 0
+
+            # item product price
+            try:
+                new_item['item_product_price'] = Decimal(order_items_list['Order Item Product Price'])
+            except:
+                new_item['item_product_price'] = 0.0
+
+            # item basic price
+            try:
+                new_item['item_basic_price'] = Decimal(order_items_list['Order Item Basic Price'])
+            except:
+                new_item['item_basic_price'] = 0.0
+            
+            # discount amount
+            try:
+                new_item['item_discount_amount'] = Decimal(order_items_list['Order Item Discount Amount'])
+            except:
+                new_item['item_discount_amount'] = 0.0
+
+            # tax amount
+            try:
+                new_item['item_tax_amount'] = Decimal(order_items_list['Order Item Tax Amount'])
+            except:
+                new_item['item_tax_amount'] = 0.0
+
+            try:
+                new_item['item_sub_total'] = Decimal(order_items_list['Order Item Sub Total'])
+            except:
+                new_item['item_sub_total'] = 0.0
+
+            seller_info = order_items_list['seller']
+            seller_list.append(copy.deepcopy(seller_info))
+
+            item_obj_list.append(copy.deepcopy(new_item))
+            new_item.clear()
+
+        return item_obj_list, seller_list
+
+
+
+    def create_seller(self, items_sellers):
+        """
+    
+        """
+        sellers_list = []
+        seller = {}
+
+        for item_seller in items_sellers:
+
+            seller['seller_uid'] = item_seller['Order Item Seller Uid']
+            seller['seller_unique_code'] = item_seller['Order Item Seller Code']
+            seller['seller_name'] = item_seller['Order Item Seller Name']
+            seller['seller_company'] = item_seller['Order Item Seller Company']
+            seller['seller_email'] = item_seller['Order Item Seller Email']
+
+            sellers_list.append(copy.deepcopy(seller))
+            seller.clear()
+
+        return sellers_list
+
+
+
     def str_to_decimal(self, order_number, decimal_str, key, break_on_err=False):
         """Converts string values to decimal 
         @param order_number: order number
@@ -192,8 +300,6 @@ class UpdateDatabase:
         @param break_on_err, Boolean, how to handle conversion exception 
         
         """
-
-        
         break_err = False
         break_err_msg = ""
 
@@ -207,11 +313,12 @@ class UpdateDatabase:
             else:
                 decimal_value = 0.00 # assign 0.00 to decimal value
                
-
         return decimal_value, break_err, break_err_msg 
 
-    
+
+
     def update_row_err( self, err, err_msg):
+
         if err:
             self.row_break_err = True
             self.row_break_err_list.append(err_msg)

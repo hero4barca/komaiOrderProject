@@ -6,13 +6,13 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models.deletion import CASCADE, PROTECT, RESTRICT
 
-
+from .seller import Seller
 
 
 class OrderItem(models.Model):
 
     item_uid = models.CharField(max_length=20)
-    item_quantity = models.CharField(max_length=20)
+    item_quantity = models.PositiveIntegerField()
     item_product_id = models.CharField(max_length=20)
     item_product_type = models.CharField(max_length=20)
     item_product_title = models.CharField(max_length=20)
@@ -24,7 +24,8 @@ class OrderItem(models.Model):
     item_discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
     item_tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
     item_sub_total = models.DecimalField(max_digits=10, decimal_places=2)
-
+    
+    seller = models.ForeignKey(Seller, on_delete=PROTECT)
     seller_cleared = models.BinaryField(default=False) # if the transaction balance has been cleared with the seller
 
 

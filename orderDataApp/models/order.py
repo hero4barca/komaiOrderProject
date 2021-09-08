@@ -12,74 +12,74 @@ from django.db.models.deletion import CASCADE, RESTRICT
 
 class Order(models.Model):
 
-    order_number = models.CharField(max_length=20)
+    order_number = models.CharField(max_length=20, blank=True, null=True)
     order_date = models.DateField(null=True, blank=True)
     order_time = models.TimeField(null=True, blank=True)
     
-    customer_uid = models.CharField(max_length=20)
-    customer_name = models.CharField(max_length=20) # name 1
-    customer_email = models.CharField(max_length=20) # change to emailfield
+    customer_uid = models.CharField(max_length=20, blank=True, null=True)
+    customer_name = models.CharField(max_length=20, blank=True, null=True) # name 1
+    customer_email = models.CharField(max_length=20, blank=True, null=True) # change to emailfield
 
-    billing_name = models.CharField(max_length=20) # name 2
-    billing_address = models.TextField()
-    billing_district = models.CharField(max_length=20)
-    billing_state = models.CharField(max_length=20)
-    billing_zip_code = models.CharField(max_length=20)
-    billing_country = models.CharField(max_length=20)
-    billing_phone_No = models.CharField(max_length=20)
+    billing_name = models.CharField(max_length=20, blank=True, null=True) # name 2
+    billing_address = models.TextField(blank=True, null=True)
+    billing_district = models.CharField(max_length=20, blank=True, null=True)
+    billing_state = models.CharField(max_length=20, blank=True, null=True)
+    billing_zip_code = models.CharField(max_length=20, blank=True, null=True)
+    billing_country = models.CharField(max_length=20, blank=True, null=True)
+    billing_phone_No = models.CharField(max_length=20, blank=True, null=True)
 
-    shipping_name = models.CharField(max_length=20)
-    shipping_address = models.CharField(max_length=20)
-    shipping_district = models.CharField(max_length=20)
-    shipping_state = models.CharField(max_length=20)
-    shipping_zip_code = models.CharField(max_length=20)
-    shipping_country = models.CharField(max_length=20)
-    shipping_phone_No = models.CharField(max_length=20)
+    shipping_name = models.CharField(max_length=20, blank=True, null=True)
+    shipping_address = models.CharField(max_length=20, blank=True, null=True)
+    shipping_district = models.CharField(max_length=20, blank=True, null=True)
+    shipping_state = models.CharField(max_length=20, blank=True, null=True)
+    shipping_zip_code = models.CharField(max_length=20, blank=True, null=True)
+    shipping_country = models.CharField(max_length=20, blank=True, null=True)
+    shipping_phone_No = models.CharField(max_length=20, blank=True, null=True)
 
-    order_currency = models.CharField(max_length=20)
+    order_currency = models.CharField(max_length=20, blank=True, null=True)
 
     # total for items in the order
     order_total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    order_taxes = models.DecimalField(max_digits=10, decimal_places=2) #
-    order_discounts = models.DecimalField(max_digits=10, decimal_places=2)
+    order_taxes = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True) #
+    order_discounts = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # subtotal for order items after applying taxes and discount
     order_subtotal = models.DecimalField(max_digits=10, decimal_places=2) 
 
     # cost of shipping
-    order_shipping_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    order_shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-    order_ship_TBD = models.DecimalField(max_digits=10, decimal_places=2)
+    order_ship_TBD = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # order subtotal + order_shipping cost
     order_cart_total = models.DecimalField(max_digits=10, decimal_places=2)
 
     # taxes applied to cart
-    order_cart_taxes = models.DecimalField(max_digits=10, decimal_places=2)
+    order_cart_taxes = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # discount applied to cart
-    order_cart_discount = models.DecimalField(max_digits=10, decimal_places=2)
+    order_cart_discount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # cart total +/- cart discount, cart taxes
     order_grand_total = models.DecimalField(max_digits=10, decimal_places=2)
 
-    order_coupon_code = models.CharField(max_length=20)
-    order_coupon_value = models.DecimalField(max_digits=10, decimal_places=2)
+    order_coupon_code = models.CharField(max_length=20, blank=True, null=True)
+    order_coupon_value = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-    order_status = models.CharField(max_length=20)
+    order_status = models.CharField(max_length=20, blank=True, null=True)
     
-    payment_method = models.CharField(max_length=20)
-    payment_live = models.BooleanField() #  keep or remove ?
+    payment_method = models.CharField(max_length=20, blank=True, null=True)
+    payment_live = models.BooleanField() # default val @TODO
 
     # amount charged by payment gateway for payment processing
-    payment_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_fee = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # amount successfull paid by customer
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
-    payment_response = models.TextField()
-    payment_successful = models.BooleanField(default=False) 
+    payment_response = models.TextField(blank=True, null=True)
+    payment_successful = models.BooleanField(default=False) # default val @TODO
 
 
 class OrderNote(models.Model):

@@ -8,7 +8,7 @@ from django.db.models.deletion import CASCADE, RESTRICT, SET_DEFAULT, SET_NULL
 
 
 class Seller(models.Model):
-
+    
     seller_uid = models.CharField(max_length=20)
     seller_unique_code = models.CharField(max_length=20)   
     seller_name = models.CharField(max_length=20)
