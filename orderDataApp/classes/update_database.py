@@ -11,6 +11,9 @@ class UpdateDatabase:
     def __init__(self, order_data):
 
         self.order_data = order_data
+        self.data_errors_list = []
+
+        self.no_of_processed_rows = 0
 
         self.row_break_err = False
         self.row_break_err_list = []
@@ -28,8 +31,18 @@ class UpdateDatabase:
             new_sellers_obj_list = self.create_seller(items_sellers)
             
             
-            #check for row break error 
-                #True -> don's save objects to DB
+            #check for row break error
+            if self.row_break_err:
+
+                # copy break_errs to rows_error_list
+                for error in self.row_break_err_list:
+                    self.data_errors_list.append(copy.deepcopy(error))
+
+                self.row_break_err_list.clear()
+                self.row_break_err = False
+
+            #else:
+                
                 # False -> unwrap dicts and save objects to DB if the
                         # use new method
 
@@ -193,7 +206,7 @@ class UpdateDatabase:
 
     def create_order_items(self, order_items_list):
         """Creates a list of order items corresponding to the Order Items model
-        @param order_items_list: raw list of order items from csv 
+        @param order_items_list: raw list of order items retrieved from sessions
         @return item_obj_list: list of dict objects corresponding to the definition of the order_item model
         """
 
@@ -271,7 +284,9 @@ class UpdateDatabase:
 
 
     def create_seller(self, items_sellers):
-        """
+        """Create seller dicts with keys that correspond to the Seller Model
+        @param items_sellers, list of items seller retrieved from saved sessions variable
+        @return sellers_list  
     
         """
         sellers_list = []
