@@ -79,7 +79,7 @@ class Order(models.Model):
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     payment_response = models.TextField()
-    payment_successful = models.BooleanField() 
+    payment_successful = models.BooleanField(default=False) 
 
 
 class OrderNote(models.Model):
