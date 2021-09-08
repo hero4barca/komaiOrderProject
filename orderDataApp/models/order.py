@@ -13,7 +13,8 @@ from django.db.models.deletion import CASCADE, RESTRICT
 class Order(models.Model):
 
     order_number = models.CharField(max_length=20)
-    order_date = models.DateTimeField()
+    order_date = models.DateField(null=True, blank=True)
+    order_time = models.TimeField(null=True, blank=True)
     
     customer_uid = models.CharField(max_length=20)
     customer_name = models.CharField(max_length=20) # name 1
@@ -33,7 +34,7 @@ class Order(models.Model):
     shipping_state = models.CharField(max_length=20)
     shipping_zip_code = models.CharField(max_length=20)
     shipping_country = models.CharField(max_length=20)
-    shipping_phone_no = models.CharField(max_length=20)
+    shipping_phone_No = models.CharField(max_length=20)
 
     order_currency = models.CharField(max_length=20)
 
@@ -86,6 +87,7 @@ class OrderNote(models.Model):
     added_by = models.ForeignKey(User, on_delete=RESTRICT)
     order = models.ForeignKey(Order, on_delete=CASCADE)
     date_time = models.DateTimeField(default= datetime.datetime.now)
+    
 
 
 

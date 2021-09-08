@@ -57,6 +57,15 @@ def show_data (request):
 
 
 def update_data (request):
+
+    try:
+        order_data = request.session.get('order_data')
+        summary = request.session.get('summary')
+        err_msg = False
+        # update_db_response =  update_db(order_data)
+    except Exception as err:
+        err_msg = "Can't access data from sessions."
+        #order_data, summary, seller_data_list = None
     return HttpResponse(request.session['order_data'])
 
 
@@ -64,7 +73,7 @@ def update_data (request):
 
 
 
-# ************** ordinary method calls **************
+# ************** ordinary functions **************
 
 def make_seller_list(order_data):
     
@@ -87,6 +96,8 @@ def make_seller_list(order_data):
                 seller_data_list.append(copy.deepcopy(new_seller_data))
 
     #assert False
-    return seller_data_list        
+    return seller_data_list    
+
+ 
 
     

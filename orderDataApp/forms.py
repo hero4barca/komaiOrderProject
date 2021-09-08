@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 
 # import validatord for csv file type
 from .validators import validate_file_extension, validate_content_type, validate_file_type
-from orderDataApp.classes.CsvFileReader import * 
+from orderDataApp.classes.csv_file_reader import * 
 
 class CsvUploadForm(forms.Form):
     csv_file = forms.FileField(validators=[validate_file_extension,
