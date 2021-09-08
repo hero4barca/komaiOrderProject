@@ -8,6 +8,8 @@ class UpdateDatabase:
 
         self.order_data = order_data
 
+        self.row_break_err = False
+        self.row_break_err_list = []
 
     def update_db(self):
 
@@ -19,8 +21,11 @@ class UpdateDatabase:
     def create_order(self, row):
 
         order_dict = {}
-        error = False
-        error_list = []
+        #error = False
+        #error_list = []
+
+        #break_err= False
+        #break_err_list = []
 
     
         order_number = row["Order Number"]
@@ -34,10 +39,9 @@ class UpdateDatabase:
         except:
             order_date, order_time = None # assign none to date and time 
             
-            error = True
-
-            datetime_conversion_err_str = "Couldn't convert for order -> %s" % order_dict["order_number"] # detailerror in error list
-            error_list.append(datetime_conversion_err_str)
+            #error = True
+            #datetime_conversion_err_str = "Couldn't convert for order -> %s" % order_dict["order_number"] # detailerror in error list
+            #error_list.append(datetime_conversion_err_str)
         
         # assign date,time to dict        
         order_dict["order_date"] = order_date 
@@ -65,25 +69,92 @@ class UpdateDatabase:
         order_dict["shipping_phone_No"]  = row["Ship To Mobile"]
 
 
-        order_dict["order_currency"]  = row["Order Currency"]
+        order_dict["order_currency"] = row["Order Currency"]
 
-        total_value, total_err, total_err_msg = self.str_to_decimal()
+        # convert order total to decimal
+        order_total, total_err, total_err_msg = self.str_to_decimal(order_number, row["Order Total"], 
+                                                                    "Order Total", True)
+        order_dict["order_total"]  = order_total 
+        self.update_row_err(total_err,total_err_msg)
 
-        order_dict["order_total"]  = row["Order Total"] # deal breaker
-        order_dict["order_taxes"]  = row["Order Taxes"]
-        order_dict["order_discounts"]  = row["Order Discounts"]
-        order_dict["order_subtotal"]  = row["Order Subtotal"] # deal breaker
+        
+        #convert order_taxes to decimal 
+        order_taxes, order_taxes_err, order_taxes_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Taxes"], 
+                                                                            "Order Taxes")
+        order_dict["order_taxes"]  = order_taxes
 
-        # cast all to decimal
-        order_dict["order_shipping_cost"]  = row["Order Shipping"] # deal breaker
-        order_dict["order_ship_TBD"]  = row["Order Ship Tbd"]
-        order_dict["order_cart_total"]  = row["Order Cart Total"] # db
-        order_dict["order_cart_taxes"]  = row["Order Cart Taxes"]
-        order_dict["order_cart_discount"]  = row["Order Cart Discounts"]
-        order_dict["order_grand_total"]  = row["Order Grand Total"] # deal breaker
-        order_dict["order_coupon_value"]  = row["Order Coupon Value"]
-        order_dict["payment_fee"]  = row["Payment Fee"]
-        order_dict["payment_amount"]  = row["Payment Amount"] # deal breaker
+        # convert order_discount to decimal
+        order_discounts, order_discounts_err, order_discounts_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Discounts"], 
+                                                                            "Order Discounts")                
+        order_dict["order_discounts"]  = order_discounts
+
+        # convert order_taxes to decimal
+        order_subtotal, order_subtotal_err, order_subtotal_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Subtotal"], 
+                                                                            "Order Subtotal", True)        
+        order_dict["order_subtotal"]  = order_subtotal # deal 
+        self.update_row_err(order_subtotal_err, order_discounts_err_msg)
+
+        # convert shipping cost to decimal
+        order_shipping_cost, order_shipping_cost_err, order_shipping_cost_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Shipping"], 
+                                                                            "Order Shipping", True)        
+        order_dict["order_shipping_cost"]  = order_shipping_cost 
+        self.update_row_err(order_shipping_cost_err, order_shipping_cost_err_msg)
+
+        # convert shipping_TBD to decimal
+        order_shipping_TBD, order_shipping_TBD_err, order_shipping_TBD_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Ship Tbd"], 
+                                                                            "Order Ship Tbd")        
+        order_dict["order_ship_TBD"]  = order_shipping_TBD
+        
+        # convert cart_total
+        order_cart_total, order_cart_total_err, order_cart_total_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Cart Total"], 
+                                                                            "Order Cart Total", True)        
+        order_dict["order_cart_total"]  = order_cart_total 
+        self.update_row_err(order_cart_total_err, order_cart_total_err_msg)
+
+        # convert  Cart Taxes to decimal
+        order_cart_taxes, order_cart_taxes_err, order_cart_taxes_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Cart Taxes"], 
+                                                                            "Order Cart Taxes")        
+        order_dict["order_cart_taxes"]  = order_cart_taxes
+        
+        # convert  Cart Discount to decimal
+        order_cart_discount, order_cart_discount_err, order_cart_discount_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Cart Discounts"], 
+                                                                            "Order Cart Discounts")        
+        order_dict["order_cart_discount"]  = order_cart_discount
+
+        # convert Grand Total
+        order_grand_total, order_grand_total_err, order_grand_total_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Grand Total"], 
+                                                                            "Order Grand Total", True)        
+        order_dict["order_grand_total"]  = order_grand_total
+        self.update_row_err(order_grand_total_err, order_grand_total_err_msg)
+
+        # convert  coupon value to decimal
+        order_coupon_value, order_coupon_value_err, order_coupon_value_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Order Coupon Value"], 
+                                                                            "Order Coupon Value")        
+        order_dict["order_coupon_value"]  = order_coupon_value
+
+        # convert  Payment fee to decimal
+        order_payment_fee, order_payment_fee_err, order_payment_fee_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Payment Fee"], 
+                                                                            "Payment Fee")        
+        order_dict["payment_fee"]  = order_payment_fee
+
+        # convert  payment amt to decimal
+        order_payment_amt, order_payment_amt_err, order_payment_amt_err_msg = self.str_to_decimal(order_number, 
+                                                                            row["Payment Amount"], 
+                                                                            "Payment Amount", True)        
+        order_dict["payment_amount"]  = order_payment_amt 
+        self.update_row_err(order_payment_amt_err, order_payment_amt_err_msg)
+
 
         order_dict["order_coupon_code"]  = row["Order Coupon Code"] 
 
@@ -103,7 +174,7 @@ class UpdateDatabase:
 
 
         
-        return order_dict, error, error_list
+        return order_dict # , error, error_list
 
         
     def create_order_item(self):
@@ -138,6 +209,13 @@ class UpdateDatabase:
                
 
         return decimal_value, break_err, break_err_msg 
+
+    
+    def update_row_err( self, err, err_msg):
+        if err:
+            self.row_break_err = True
+            self.row_break_err_list.append(err_msg)
+        
             
         
         
