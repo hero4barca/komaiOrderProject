@@ -2,7 +2,7 @@ import datetime
 import copy
 
 from decimal import Decimal
-from orderDataApp.models import seller
+from orderDataApp.models import Order, Seller, OrderItem
 
 
 class UpdateDatabase:
@@ -12,7 +12,9 @@ class UpdateDatabase:
         self.order_data = order_data
         self.data_errors_list = []
 
-        self.no_of_processed_rows = 0
+        self.new_orders_created = 0
+        self.new_sellers_created = 0
+        self.new_orderitems_created = 0
 
         self.row_break_err = False
         self.row_break_err_list = []
@@ -23,15 +25,16 @@ class UpdateDatabase:
 
         for row in self.order_data:
 
+            # create order_dict for db
             new_order =self.create_order(row) 
 
-            
+            #retrieve list of order items from row
             order_items = row['order_items']
 
-            #*******rework starts here
+            # create order_items for db
             order_items_cleaned = self.create_order_items(order_items)
 
-            #*******continue
+            # reate seller for db
             cleaned_order_items_with_sellers = self.create_seller(order_items_cleaned)
             
             
@@ -46,9 +49,12 @@ class UpdateDatabase:
                 self.row_break_err = False
 
             else:
+                # try-> except for this
                 self.save_to_db(new_order, cleaned_order_items_with_sellers)
-                # False -> unwrap dicts and save objects to DB if the
-                        # use new method
+                
+            
+                    
+                        
 
 
     def create_order(self, row):
@@ -345,8 +351,37 @@ class UpdateDatabase:
         
             
     def save_to_db(self, order_dict, order_items_dict_list):
-        # check if order exist, No? save
-        #check if seller exist, No? save
 
-        #******rework orderItem ->seller, we need the seller in the context of each orderItem
-        pass
+        order_model_obj, order_created = Order.objects.get_or_create(**order_dict)
+
+        if order_created:
+            
+            self.new_orders_created += 1 # increase count of new orders created  
+
+            new_seller = {}
+            for item_with_seller in order_items_dict_list:
+
+                # pop seller from dict and save to database
+                new_seller = item_with_seller.pop("seller") 
+                seller_model_obj, seller_created = Seller.objects.get_or_create(**new_seller)
+                
+                if seller_created:
+                    self.new_sellers_created += 1
+
+                # pass newly created seller obj as foreign key to seller
+                item_with_seller['seller'] = seller_model_obj
+                
+                # pass newly created order as foreign key to order
+                item_with_seller['order'] = order_model_obj
+                
+                orderitem_model_obj, orderitem_created = OrderItem.objects.get_or_create(**item_with_seller)
+                
+                if orderitem_created:
+                    self.new_orderitems_created += 1
+
+                new_seller.clear()
+   
+
+
+
+        
