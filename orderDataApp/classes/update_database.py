@@ -349,7 +349,8 @@ class UpdateDatabase:
             self.row_break_err = True
             self.row_break_err_list.append(err_msg)
         
-            
+
+
     def save_to_db(self, order_dict, order_items_dict_list):
 
         order_model_obj, order_created = Order.objects.get_or_create(**order_dict)
@@ -381,9 +382,17 @@ class UpdateDatabase:
 
                 new_seller.clear()
 
-    def num_of_new_records(self):
 
-        return self.new_orders_created, self.new_sellers_created, self.new_orderitems_created
+
+    def get_num_of_new_records(self):
+
+        return self.new_orders_created, self.new_sellers_created, self.
+
+    
+        
+    def get_data_errors(self):
+
+        return self.data_errors_list
    
 
 

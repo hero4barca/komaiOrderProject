@@ -59,6 +59,7 @@ def show_data (request):
 
 def update_data (request):
 
+    new_orders_num, new_sellers_num, new_orderitems_number = 0
     try:
         order_data = request.session.get('order_data')
         summary = request.session.get('summary')
@@ -66,13 +67,14 @@ def update_data (request):
 
         new_db_update = UpdateDatabase(order_data)
         new_db_update.update_data()
-        new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.num_of_new_records()
+        new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.get_num_of_new_records()
 
     except Exception as err:
         err_msg = "Can't access data from sessions."
         #order_data, summary, seller_data_list = None
-        
-    return HttpResponse(request.session['order_data'])
+
+    return render (request, 'update_data.html', {"err_msg": err_msg,
+                                                  "error": } )
 
 
 
