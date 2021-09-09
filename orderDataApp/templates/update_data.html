@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+{% block title %}
+csv data update summary
+{% endblock %}
+
+{% block content %}
+<div class="data_update_summary">
+
+    {% if not error %}
+        <div>
+            <span> CSV file data was successfully matched to database </span>
+          
+            <p> 
+            <span> Update Summary: </span>
+            <ul>
+                <li> Number of new order added: {{ new_orders }}</li>
+                <li> Number of new seller added: {{ new_sellers }}</li>
+                <li> Number of new order items added: {{ new_orderitems}} </li>
+            </ul>
+            </p>
+
+            {% if error %}
+                <p> 
+                    <span> Data Summary: the order(s) data displayed below were not processed!!! </span>
+                    <ul>
+                        {% for msg in data_update_errors %}
+                        <li>
+                            {{ msg }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </p>
+            {% endif %}
+
+        </div>
+
+
+    {% else %}
+        
+        <div class="alert alert-danger">
+            {{ err_msg }}
+        </div>   
+    {% endif %}
+</div>
+{% endblock%}
+
+{% block javascript_block %}
+{% endblock %}

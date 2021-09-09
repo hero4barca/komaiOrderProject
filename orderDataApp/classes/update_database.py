@@ -34,20 +34,14 @@ class UpdateDatabase:
             # create order_items for db
             order_items_cleaned = self.create_order_items(order_items)
 
-            # reate seller for db
+            # create seller for db
             cleaned_order_items_with_sellers = self.create_seller(order_items_cleaned)
             
             
             #check for row break error
             if self.row_break_err:
 
-                # copy break_errs to rows_error_list
-                for error in self.row_break_err_list:
-                    self.data_errors_list.append(copy.deepcopy(error))
-
-                self.row_break_err_list.clear()
-                self.row_break_err = False
-
+                self.update_data_errors(new_order['order_number'])
             else:
                 # try-> except for this
                 self.save_to_db(new_order, cleaned_order_items_with_sellers)
@@ -335,7 +329,7 @@ class UpdateDatabase:
             if break_on_err: # assign none to value and generate error 
                 decimal_value = None
                 break_err = True
-                break_err_msg = "Couldn't convert %s to decimal for order '%s' " % key, order_number
+                break_err_msg = "Couldn't convert %s to decimal" % key
             else:
                 decimal_value = 0.00 # assign 0.00 to decimal value
                
@@ -395,6 +389,11 @@ class UpdateDatabase:
         return self.data_errors_list
    
 
+    def update_data_error(self, order_number):
 
-
+        all_row_error_messages = ", ".join(self.row_break_err_list)
+        data_err = order_number + ": " + all_row_error_messages
+        self.data_errors_list.append(data_err)
+        self.row_break_err_list.clear()
+                
         
