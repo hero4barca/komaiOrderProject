@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import CsvUploadForm
+from orderDataApp.classes.update_database import UpdateDatabase
 
 def home(request):
     return render (request, 'home.html')
@@ -62,10 +63,15 @@ def update_data (request):
         order_data = request.session.get('order_data')
         summary = request.session.get('summary')
         err_msg = False
-        # update_db_response =  update_db(order_data)
+
+        new_db_update = UpdateDatabase(order_data)
+        new_db_update.update_data()
+        new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.num_of_new_records()
+
     except Exception as err:
         err_msg = "Can't access data from sessions."
         #order_data, summary, seller_data_list = None
+        
     return HttpResponse(request.session['order_data'])
 
 
