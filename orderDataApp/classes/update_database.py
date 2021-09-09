@@ -386,10 +386,10 @@ class UpdateDatabase:
 
     def get_num_of_new_records(self):
 
-        return self.new_orders_created, self.new_sellers_created, self.
+        return self.new_orders_created, self.new_sellers_created, self.new_orderitems_created
 
-    
-        
+
+
     def get_data_errors(self):
 
         return self.data_errors_list

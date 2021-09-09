@@ -63,18 +63,22 @@ def update_data (request):
     try:
         order_data = request.session.get('order_data')
         summary = request.session.get('summary')
-        err_msg = False
+        error = False
 
         new_db_update = UpdateDatabase(order_data)
         new_db_update.update_data()
+        data_update_errors = new_db_update.get_data_errors()
         new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.get_num_of_new_records()
 
     except Exception as err:
-        err_msg = "Can't access data from sessions."
+        error = "Can't access data from sessions."
         #order_data, summary, seller_data_list = None
 
-    return render (request, 'update_data.html', {"err_msg": err_msg,
-                                                  "error": } )
+    return render (request, 'update_data.html', {"err_msg": error,
+                                                  "data_update_errors": data_update_errors,
+                                                   "new_orders": new_orders_num,
+                                                   "new_sellers": new_sellers_num,
+                                                   "new_orderitems": new_orderitems_number})
 
 
 
