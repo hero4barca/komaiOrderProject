@@ -7,6 +7,7 @@ from django.conf import settings
 from django.db.models.deletion import CASCADE, PROTECT, RESTRICT
 
 from .seller import Seller
+from .order import Order
 
 
 class OrderItem(models.Model):
@@ -24,7 +25,8 @@ class OrderItem(models.Model):
     item_discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
     item_tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
     item_sub_total = models.DecimalField(max_digits=10, decimal_places=2)
-    
+
+    order = models.ForeignKey(Order, on_delete=RESTRICT) 
     seller = models.ForeignKey(Seller, on_delete=PROTECT)
     seller_cleared = models.BinaryField(default=False) # if the transaction balance has been cleared with the seller
 

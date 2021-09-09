@@ -4,7 +4,6 @@ import copy
 from decimal import Decimal
 from orderDataApp.models import seller
 
-from django.db.models.fields import PositiveBigIntegerField
 
 class UpdateDatabase:
 
@@ -18,7 +17,9 @@ class UpdateDatabase:
         self.row_break_err = False
         self.row_break_err_list = []
 
-    def update_db(self):
+
+
+    def update_data(self):
 
         for row in self.order_data:
 
@@ -26,9 +27,12 @@ class UpdateDatabase:
 
             
             order_items = row['order_items']
-            new_order_items_obj_list , items_sellers= self.create_order_items(order_items)
 
-            new_sellers_obj_list = self.create_seller(items_sellers)
+            #*******rework starts here
+            order_items_cleaned = self.create_order_items(order_items)
+
+            #*******continue
+            cleaned_order_items_with_sellers = self.create_seller(order_items_cleaned)
             
             
             #check for row break error
@@ -41,8 +45,8 @@ class UpdateDatabase:
                 self.row_break_err_list.clear()
                 self.row_break_err = False
 
-            #else:
-                
+            else:
+                self.save_to_db(new_order, cleaned_order_items_with_sellers)
                 # False -> unwrap dicts and save objects to DB if the
                         # use new method
 
@@ -211,7 +215,6 @@ class UpdateDatabase:
         """
 
         item_obj_list =[]
-        seller_list = []
 
         new_item = {}
        
@@ -273,26 +276,28 @@ class UpdateDatabase:
             except:
                 new_item['item_sub_total'] = 0.0
 
-            seller_info = order_items_list['seller']
-            seller_list.append(copy.deepcopy(seller_info))
+            #********
+            new_item['seller'] = order_items_list['seller']
+            
 
             item_obj_list.append(copy.deepcopy(new_item))
             new_item.clear()
 
-        return item_obj_list, seller_list
+        return item_obj_list
 
 
 
-    def create_seller(self, items_sellers):
+    def create_seller(self, order_items_with_sellers):
         """Create seller dicts with keys that correspond to the Seller Model
         @param items_sellers, list of items seller retrieved from saved sessions variable
         @return sellers_list  
     
         """
-        sellers_list = []
         seller = {}
 
-        for item_seller in items_sellers:
+        for item in order_items_with_sellers:
+
+            item_seller = item.pop("seller")
 
             seller['seller_uid'] = item_seller['Order Item Seller Uid']
             seller['seller_unique_code'] = item_seller['Order Item Seller Code']
@@ -300,10 +305,10 @@ class UpdateDatabase:
             seller['seller_company'] = item_seller['Order Item Seller Company']
             seller['seller_email'] = item_seller['Order Item Seller Email']
 
-            sellers_list.append(copy.deepcopy(seller))
+            item['seller'] =  copy.deepcopy(seller)
             seller.clear()
 
-        return sellers_list
+        return order_items_with_sellers
 
 
 
@@ -339,5 +344,9 @@ class UpdateDatabase:
             self.row_break_err_list.append(err_msg)
         
             
-        
-        
+    def save_to_db(self, order_dict, order_items_dict_list):
+        # check if order exist, No? save
+        #check if seller exist, No? save
+
+        #******rework orderItem ->seller, we need the seller in the context of each orderItem
+        pass
