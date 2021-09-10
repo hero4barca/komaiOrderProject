@@ -15,6 +15,7 @@ class UpdateDatabase:
         self.new_orders_created = 0
         self.new_sellers_created = 0
         self.new_orderitems_created = 0
+        self.num_of_records = 0
 
         self.row_break_err = False
         self.row_break_err_list = []
@@ -24,7 +25,8 @@ class UpdateDatabase:
     def update_data(self):
 
         for row in self.order_data:
-
+            
+            self.num_of_records += 1
             # create order_dict for db
             new_order =self.create_order(row) 
 
@@ -43,7 +45,7 @@ class UpdateDatabase:
 
                 self.update_data_errors(new_order['order_number'])
             else:
-                # try-> except for this
+                # save row data to database
                 self.save_to_db(new_order, cleaned_order_items_with_sellers)
                 
             
@@ -79,7 +81,7 @@ class UpdateDatabase:
         
         # assign date,time to dict        
         order_dict["order_date"] = order_date 
-        order_time["order_time"] = order_time
+        order_dict["order_time"] = order_time
 
         order_dict["customer_uid"] = row["Customer Uid"]
         order_dict["customer_name"] = row["Customer Name"]
@@ -182,9 +184,9 @@ class UpdateDatabase:
         # convert  payment amt to decimal
         order_payment_amt, order_payment_amt_err, order_payment_amt_err_msg = self.str_to_decimal(order_number, 
                                                                             row["Payment Amount"], 
-                                                                            "Payment Amount", True)        
+                                                                            "Payment Amount")        
         order_dict["payment_amount"]  = order_payment_amt 
-        self.update_row_err(order_payment_amt_err, order_payment_amt_err_msg)
+        #self.update_row_err(order_payment_amt_err, order_payment_amt_err_msg)
 
         order_dict["order_coupon_code"]  = row["Order Coupon Code"] 
         order_dict["order_status"]  = row["Order Status"]
@@ -204,7 +206,7 @@ class UpdateDatabase:
         else:
             order_dict["payment_successful"]  = False
         
-        return order_dict # , error, error_list
+        return order_dict #
 
 
 
@@ -220,28 +222,28 @@ class UpdateDatabase:
        
         for item in order_items_list: # loop through items in the list
     
-            new_item['item_uid'] = order_items_list["Order Item Item Uid"]
+            new_item['item_uid'] = item["Order Item Item Uid"]
 
             # cast quantity to integer and assign
-            item_quantity_str = order_items_list["Order Item Quantity"]
+            item_quantity_str = item["Order Item Quantity"]
             if str.isdigit(item_quantity_str):
                 new_item['item_quantity'] = int(item_quantity_str)
             else:
                new_item['item_quantity'] = 0
             
-            new_item['item_product_id'] = order_items_list["Order Item Product Id"]
-            new_item['item_product_type'] = order_items_list["Order Item Product Type"]
-            new_item['item_product_title'] = order_items_list["Order Item Product Title"]
+            new_item['item_product_id'] = item["Order Item Product Id"]
+            new_item['item_product_type'] = item["Order Item Product Type"]
+            new_item['item_product_title'] = item["Order Item Product Title"]
             
             # cast return_days to integer and assign
-            item_return_days_str = order_items_list["Order Item Return Days"]
+            item_return_days_str = item["Order Item Return Days"]
             if str.isdigit(item_return_days_str):
                 new_item['item_return_days'] = int(item_return_days_str)
             else:
                new_item['item_return_days'] = 0
 
             # cast exchnage_days to integer and assign
-            item_exchange_days_str = order_items_list["Order Item Exchange Days"]
+            item_exchange_days_str = item["Order Item Exchange Days"]
             if str.isdigit(item_exchange_days_str):
                 new_item['item_exchange_days'] = int(item_exchange_days_str)
             else:
@@ -249,35 +251,35 @@ class UpdateDatabase:
 
             # item product price
             try:
-                new_item['item_product_price'] = Decimal(order_items_list['Order Item Product Price'])
+                new_item['item_product_price'] = Decimal(item['Order Item Product Price'])
             except:
                 new_item['item_product_price'] = 0.0
 
             # item basic price
             try:
-                new_item['item_basic_price'] = Decimal(order_items_list['Order Item Basic Price'])
+                new_item['item_basic_price'] = Decimal(item['Order Item Basic Price'])
             except:
                 new_item['item_basic_price'] = 0.0
             
             # discount amount
             try:
-                new_item['item_discount_amount'] = Decimal(order_items_list['Order Item Discount Amount'])
+                new_item['item_discount_amount'] = Decimal(item['Order Item Discount Amount'])
             except:
                 new_item['item_discount_amount'] = 0.0
 
             # tax amount
             try:
-                new_item['item_tax_amount'] = Decimal(order_items_list['Order Item Tax Amount'])
+                new_item['item_tax_amount'] = Decimal(item['Order Item Tax Amount'])
             except:
                 new_item['item_tax_amount'] = 0.0
 
             try:
-                new_item['item_sub_total'] = Decimal(order_items_list['Order Item Sub Total'])
+                new_item['item_sub_total'] = Decimal(item['Order Item Sub Total'])
             except:
                 new_item['item_sub_total'] = 0.0
 
             #********
-            new_item['seller'] = order_items_list['seller']
+            new_item['seller'] = item['seller']
             
 
             item_obj_list.append(copy.deepcopy(new_item))
@@ -312,28 +314,38 @@ class UpdateDatabase:
 
 
 
-    def str_to_decimal(self, order_number, decimal_str, key, break_on_err=False):
+    def str_to_decimal(self, order_number, decimal_str, key, skip_if_non_digit=False):
         """Converts string values to decimal 
         @param order_number: order number
         @param decimal_str -> value to be converted to decimal
         @param key -> dict key of the var (decimal str)
-        @param break_on_err, Boolean, how to handle conversion exception 
-        
+        @param Boolean skip_if_non_digit, 
         """
+
         break_err = False
         break_err_msg = ""
 
         try:
             decimal_value = Decimal(decimal_str)            
-        except:
-            if break_on_err: # assign none to value and generate error 
+        except Exception as err:
+
+            if key == "Payment Amount" and decimal_str == "":
+                decimal_value = None     
+
+            elif skip_if_non_digit: # assign none to value and generate error 
                 decimal_value = None
+
+
                 break_err = True
                 break_err_msg = "Couldn't convert %s to decimal" % key
+
+                # add corresponding error for the row
+                # self.update_row_err(break_err, break_err_msg)
+
             else:
-                decimal_value = 0.00 # assign 0.00 to decimal value
+                decimal_value = 0.00 # assign 0.00 to decimal value"""
                
-        return decimal_value, break_err, break_err_msg 
+        return decimal_value , break_err, break_err_msg 
 
 
 
@@ -377,8 +389,11 @@ class UpdateDatabase:
                 new_seller.clear()
 
 
+    def get_number_of_row_processed(self):
+        return self.num_of_records
 
-    def get_num_of_new_records(self):
+
+    def get_number_of_new_records(self):
 
         return self.new_orders_created, self.new_sellers_created, self.new_orderitems_created
 
@@ -389,11 +404,19 @@ class UpdateDatabase:
         return self.data_errors_list
    
 
-    def update_data_error(self, order_number):
+    def update_data_errors(self, order_number):
 
-        all_row_error_messages = ", ".join(self.row_break_err_list)
-        data_err = order_number + ": " + all_row_error_messages
+        # join all the errors related to a particular row 
+        current_row_error_messages = ", ".join(self.row_break_err_list)
+
+        # concatenate with order_number -> data_err for each row
+        data_err = order_number + ": " + current_row_error_messages
+
+        # append data_err to main error list
         self.data_errors_list.append(data_err)
+
+        # clear row breaking errors list and set flag to False
         self.row_break_err_list.clear()
+        self.row_break_err = False
                 
         

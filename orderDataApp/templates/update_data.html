@@ -16,20 +16,21 @@ csv data update summary
                 <li> Number of new order added: {{ new_orders }}</li>
                 <li> Number of new seller added: {{ new_sellers }}</li>
                 <li> Number of new order items added: {{ new_orderitems}} </li>
+                <li> Number of rows processed: {{ rows_processed}} </li>
             </ul>
             </p>
 
-            {% if error %}
-                <p> 
-                    <span> Data Summary: the order(s) data displayed below were not processed!!! </span>
-                    <ul>
-                        {% for msg in data_update_errors %}
-                        <li>
-                            {{ msg }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </p>
+            {% if data_update_errors|length > 0 %}
+            <p> 
+                <span> Data Summary: the order(s) data displayed below were not processed!!! </span>
+                <ul>
+                    {% for msg in data_update_errors %}
+                    <li>
+                       {{forloop.counter}} | {{ msg }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </p>
             {% endif %}
 
         </div>

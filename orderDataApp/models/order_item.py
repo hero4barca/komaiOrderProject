@@ -28,7 +28,7 @@ class OrderItem(models.Model):
 
     order = models.ForeignKey(Order, on_delete=RESTRICT) 
     seller = models.ForeignKey(Seller, on_delete=PROTECT)
-    seller_cleared = models.BinaryField(default=False) # if the transaction balance has been cleared with the seller
+    seller_cleared = models.BooleanField(default=False) # if the transaction balance has been cleared with the seller
 
 
 

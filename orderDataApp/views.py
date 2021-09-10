@@ -59,7 +59,9 @@ def show_data (request):
 
 def update_data (request):
 
-    new_orders_num, new_sellers_num, new_orderitems_number = 0
+    new_orders_num, new_sellers_num, new_orderitems_number = 0,0,0
+    processed_rows_num = 0
+    data_update_errors = []
     
     error = False
     error_msg = ""
@@ -71,11 +73,12 @@ def update_data (request):
         new_db_update = UpdateDatabase(order_data)
         new_db_update.update_data()
         data_update_errors = new_db_update.get_data_errors()
-        new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.get_num_of_new_records()
-
+        new_orders_num, new_sellers_num, new_orderitems_number = new_db_update.get_number_of_new_records()
+        processed_rows_num = new_db_update.get_number_of_row_processed()
     except Exception as err:
         error = True
         error_msg = "Can't access data from sessions."
+        raise err # hide later
         #order_data, summary, seller_data_list = None
 
     return render (request, 'update_data.html', {"error": error,
@@ -83,7 +86,8 @@ def update_data (request):
                                                   "data_update_errors": data_update_errors,
                                                    "new_orders": new_orders_num,
                                                    "new_sellers": new_sellers_num,
-                                                   "new_orderitems": new_orderitems_number})
+                                                   "new_orderitems": new_orderitems_number,
+                                                   "rows_processed": processed_rows_num})
 
 
 

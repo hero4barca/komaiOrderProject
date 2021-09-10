@@ -76,10 +76,14 @@ class Order(models.Model):
     payment_fee = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     # amount successfull paid by customer
-    payment_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     payment_response = models.TextField(blank=True, null=True)
     payment_successful = models.BooleanField(default=False) # default val @TODO
+
+    def __str__(self) :
+        return " | ".join([self.order_number, str(self.order_date), self.customer_name, 
+                            str(self.payment_amount), str(self.order_grand_total ), str(self.order_cart_discount) ])
 
 
 class OrderNote(models.Model):
