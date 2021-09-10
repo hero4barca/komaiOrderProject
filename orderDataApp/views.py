@@ -77,8 +77,8 @@ def update_data (request):
         processed_rows_num = new_db_update.get_number_of_row_processed()
     except Exception as err:
         error = True
-        error_msg = "Can't access data from sessions."
-        raise err # hide later
+        error_msg = str(err)
+        #raise err # hide later
         #order_data, summary, seller_data_list = None
 
     return render (request, 'update_data.html', {"error": error,

@@ -42,7 +42,7 @@ class UpdateDatabase:
             
             #check for row break error
             if self.row_break_err:
-
+                # copy row_break_errors to main error list for CSV data 
                 self.update_data_errors(new_order['order_number'])
             else:
                 # save row data to database
@@ -106,78 +106,78 @@ class UpdateDatabase:
         order_dict["order_currency"] = row["Order Currency"]
 
         # convert order total to decimal
-        order_total  = self.str_to_decimal(order_number, row["Order Total"], 
+        order_total  = self.str_to_decimal( row["Order Total"], 
                                                     "Order Total", True)
         order_dict["order_total"]  = order_total 
  
         #convert order_taxes to decimal 
-        order_taxes  = self.str_to_decimal(order_number, 
+        order_taxes  = self.str_to_decimal(
                                              row["Order Taxes"], 
                                                     "Order Taxes")
         order_dict["order_taxes"]  = order_taxes
 
         # convert order_discount to decimal
-        order_discounts  = self.str_to_decimal(order_number, 
+        order_discounts  = self.str_to_decimal( 
                                                     row["Order Discounts"], 
                                                         "Order Discounts")                
         order_dict["order_discounts"]  = order_discounts
 
         # convert order_taxes to decimal
-        order_subtotal = self.str_to_decimal(order_number, 
+        order_subtotal = self.str_to_decimal(
                                                  row["Order Subtotal"], 
                                                     "Order Subtotal", True)        
         order_dict["order_subtotal"]  = order_subtotal  
 
         # convert shipping cost to decimal
-        order_shipping_cost = self.str_to_decimal(order_number, 
+        order_shipping_cost = self.str_to_decimal(
                                                     row["Order Shipping"], 
                                                         "Order Shipping", True)        
         order_dict["order_shipping_cost"]  = order_shipping_cost 
 
         # convert shipping_TBD to decimal
-        order_shipping_TBD  = self.str_to_decimal(order_number, 
+        order_shipping_TBD  = self.str_to_decimal( 
                                                     row["Order Ship Tbd"], 
                                                         "Order Ship Tbd")        
         order_dict["order_ship_TBD"]  = order_shipping_TBD
         
         # convert cart_total
-        order_cart_total  = self.str_to_decimal(order_number, 
+        order_cart_total  = self.str_to_decimal(
                                                     row["Order Cart Total"], 
                                                         "Order Cart Total", True)        
         order_dict["order_cart_total"]  = order_cart_total 
 
         # convert  Cart Taxes to decimal
-        order_cart_taxes  = self.str_to_decimal(order_number, 
+        order_cart_taxes  = self.str_to_decimal( 
                                                     row["Order Cart Taxes"], 
                                                         "Order Cart Taxes")        
         order_dict["order_cart_taxes"]  = order_cart_taxes
         
         # convert  Cart Discount to decimal
-        order_cart_discount = self.str_to_decimal(order_number, 
+        order_cart_discount = self.str_to_decimal(
                                                     row["Order Cart Discounts"], 
                                                         "Order Cart Discounts")        
         order_dict["order_cart_discount"]  = order_cart_discount
 
         # convert Grand Total
-        order_grand_total  = self.str_to_decimal(order_number, 
+        order_grand_total  = self.str_to_decimal( 
                                                      row["Order Grand Total"], 
                                                              "Order Grand Total", True)        
         order_dict["order_grand_total"]  = order_grand_total
 
         # convert  coupon value to decimal
-        order_coupon_value  = self.str_to_decimal(order_number, 
+        order_coupon_value  = self.str_to_decimal(
                                                         row["Order Coupon Value"], 
                                                             "Order Coupon Value")        
         order_dict["order_coupon_value"]  = order_coupon_value
 
         # convert  Payment fee to decimal
-        order_payment_fee = self.str_to_decimal(order_number, 
+        order_payment_fee = self.str_to_decimal( 
                                                      row["Payment Fee"], 
                                                              "Payment Fee")        
         order_dict["payment_fee"]  = order_payment_fee
 
         # convert  payment amt to decimal
-        order_payment_amt  = self.str_to_decimal(order_number, 
+        order_payment_amt  = self.str_to_decimal( 
                                                     row["Payment Amount"], 
                                                              "Payment Amount")        
         order_dict["payment_amount"]  = order_payment_amt 
@@ -309,7 +309,7 @@ class UpdateDatabase:
 
 
 
-    def str_to_decimal(self, order_number, decimal_str, key, skip_if_non_digit=False):
+    def str_to_decimal(self, decimal_str, key, enforce_row_break=False):
         """Converts string values to decimal 
         @param order_number: order number
         @param decimal_str -> value to be converted to decimal
@@ -327,7 +327,7 @@ class UpdateDatabase:
             if key == "Payment Amount" and decimal_str == "":
                 decimal_value = None     
 
-            elif skip_if_non_digit: # assign none to value and generate error 
+            elif enforce_row_break: # assign none to value and generate error 
                 decimal_value = None
 
 
@@ -340,7 +340,7 @@ class UpdateDatabase:
             else:
                 decimal_value = 0.00 # assign 0.00 to decimal value"""
                
-        return decimal_value #, break_err, break_err_msg 
+        return decimal_value 
 
 
 
