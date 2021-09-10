@@ -109,7 +109,6 @@ class UpdateDatabase:
         order_total  = self.str_to_decimal(order_number, row["Order Total"], 
                                                     "Order Total", True)
         order_dict["order_total"]  = order_total 
-        #self.update_row_err(total_err,total_err_msg)
  
         #convert order_taxes to decimal 
         order_taxes  = self.str_to_decimal(order_number, 
@@ -127,15 +126,13 @@ class UpdateDatabase:
         order_subtotal = self.str_to_decimal(order_number, 
                                                  row["Order Subtotal"], 
                                                     "Order Subtotal", True)        
-        order_dict["order_subtotal"]  = order_subtotal # deal 
-        #self.update_row_err(order_subtotal_err, order_discounts_err_msg)
+        order_dict["order_subtotal"]  = order_subtotal  
 
         # convert shipping cost to decimal
         order_shipping_cost = self.str_to_decimal(order_number, 
                                                     row["Order Shipping"], 
                                                         "Order Shipping", True)        
         order_dict["order_shipping_cost"]  = order_shipping_cost 
-        #self.update_row_err(order_shipping_cost_err, order_shipping_cost_err_msg)
 
         # convert shipping_TBD to decimal
         order_shipping_TBD  = self.str_to_decimal(order_number, 
@@ -148,7 +145,6 @@ class UpdateDatabase:
                                                     row["Order Cart Total"], 
                                                         "Order Cart Total", True)        
         order_dict["order_cart_total"]  = order_cart_total 
-        #self.update_row_err(order_cart_total_err, order_cart_total_err_msg)
 
         # convert  Cart Taxes to decimal
         order_cart_taxes  = self.str_to_decimal(order_number, 
@@ -167,7 +163,6 @@ class UpdateDatabase:
                                                      row["Order Grand Total"], 
                                                              "Order Grand Total", True)        
         order_dict["order_grand_total"]  = order_grand_total
-        #self.update_row_err(order_grand_total_err, order_grand_total_err_msg)
 
         # convert  coupon value to decimal
         order_coupon_value  = self.str_to_decimal(order_number, 
