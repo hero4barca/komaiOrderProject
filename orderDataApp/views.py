@@ -6,6 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .forms import CsvUploadForm
 from orderDataApp.classes.update_database import UpdateDatabase
 
+from .models import Order
+
 def home(request):
     return render (request, 'home.html')
 
@@ -99,7 +101,13 @@ def dashboard( request):
 
 
 def show_orders(request):
-    return render (request, 'show_orders.html')
+
+    try:
+        orders = Order.objects.all()
+    except Exception as err:
+        raise err
+
+    return render (request, 'show_orders.html', {"orders_list": orders})
 
 
 
