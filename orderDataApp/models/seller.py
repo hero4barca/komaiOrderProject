@@ -17,6 +17,7 @@ class Seller(models.Model):
     
 
 class BankAccount(models.Model):
+    
     account_name = models.TextField()
     account_number = models.CharField(max_length=20)
     bank_name = models.TextField()

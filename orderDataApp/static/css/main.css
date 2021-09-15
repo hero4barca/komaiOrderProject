@@ -1,0 +1,63 @@
+.message {
+    font-weight: 600;
+    color: blue;
+}
+
+.navbar-inner{
+    width:fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*=========== page: process_csv.html ===========*/
+.update-preview .order-table-container{
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-left: auto;
+    margin-right: auto ;
+    /*border: 1px solid sliver;*/
+    margin-bottom: 50px;
+    
+}
+
+.update-preview .seller-table-container{
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    margin-left: auto;
+    margin-right: auto ;
+    /*border: 1px solid silver;*/
+    margin-bottom: 50px;
+    
+}
+
+
+#seller-data-table th, #order-data-table th{
+    font-weight: 500;
+    font-variant: small-caps;
+}
+
+#seller-data-table, #order-data-table{
+    background-color: #f2f0f0;
+}
+
+.process_csv .buttons-div{
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.process_csv .update-preview .summary-div{
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.order-table-container .table-caption, .seller-table-container .table-caption{
+    width: max-content;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 500;
+    font-size: medium;
+}

@@ -1,0 +1,31 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block font-awesome-js%}
+<!-- font awesome -->
+<script defer src=" {% static '3rd-party/fontawesome/js/all.min.js' %} "></script>
+{% endblock %}
+
+{% block page_css %}
+<link id="theme-style" type="text/css" rel="stylesheet" href="{% static '/css/portal.css' %}">
+{% endblock %}
+
+{% block title %}
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}
+
+{% block javascript_block %}
+<!-- Javascript -->          
+<script src=" {% static '3rd-party/popper.min.js' %}  "></script>
+
+
+<!-- Charts JS -->
+<script src=" {% static '3rd-party/chart.js/chart.min.js' %}  "></script>
+<script src=" {% static 'js/index-charts.js' %}  "></script>
+
+<!-- Page Specific JS -->
+<script src=" {% static 'js/app.js' %}  "></script>
+{% endblock %}

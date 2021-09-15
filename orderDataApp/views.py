@@ -78,9 +78,11 @@ def update_data (request):
     except Exception as err:
         error = True
         error_msg = str(err)
-        #raise err # hide later
+
+        #delet data sessions? force retry?
         #order_data, summary, seller_data_list = None
 
+    # if number of processed rows> 1, force runthrough update
     return render (request, 'update_data.html', {"error": error,
                                                  "err_msg": error_msg,  
                                                   "data_update_errors": data_update_errors,
@@ -91,6 +93,9 @@ def update_data (request):
 
 
 
+
+def dashboard( request):
+    return render (request, 'dashboard.html')
 
 
 
