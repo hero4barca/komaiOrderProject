@@ -149,8 +149,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for order in orders_list %}
-                                {% if %}
+                                {% for order in delivered_orders_list %}
+                                
                                 <tr>
                                     <td class="cell">#{{ order.order_number }}</td>
                                     <td class="cell"><span class="truncate">Lorem ipsum dolor sit amet eget volutpat erat</span></td>
@@ -159,16 +159,10 @@
                                     
                                     <td class="cell">
 
-                                        {% if order.order_status == "Order Initiated" %}
-                                            <span class="badge bg-danger"> 
-                                        
-                                        {% elif order.order_status == "Delivered" %}
+                                       
                                             <span class="badge bg-success">
                                         
-                                        {% else %}
-                                            <span class="badge bg-warning"> 
-                                        {% endif %}
-
+                                        
                                             {{order.order_status}}
 
                                         </span>
@@ -176,7 +170,7 @@
                                     <td class="cell">{{order.payment_amount}}</td>
                                     <td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
                                 </tr>
-                                {% endif %}
+                                
                                 {% endfor %}
 
 
@@ -204,15 +198,31 @@
                                 </tr>
                             </thead>
                             <tbody>
+                              
+                                {% for order in paid_orders_list %}
+                                
                                 <tr>
-                                    <td class="cell">#15345</td>
-                                    <td class="cell"><span class="truncate">Consectetur adipiscing elit</span></td>
-                                    <td class="cell">Dylan Ambrose</td>
-                                    <td class="cell"><span class="cell-data">16 Oct</span><span class="note">03:16 AM</span></td>
-                                    <td class="cell"><span class="badge bg-warning">Pending</span></td>
-                                    <td class="cell">$96.20</td>
+                                    <td class="cell">#{{ order.order_number }}</td>
+                                    <td class="cell"><span class="truncate">Lorem ipsum dolor sit amet eget volutpat erat</span></td>
+                                    <td class="cell">{{ order.customer_name }}</td>
+                                    <td class="cell"><span>{{ order.order_date}}</span><span class="note">{{order.order_time}}</span></td>
+                                    
+                                    <td class="cell">
+                                       
+                                            <span class="badge bg-warning">
+                                        
+                                        
+                                            {{order.order_status}}
+
+                                        </span>
+                                    </td>
+                                    <td class="cell">{{order.payment_amount}}</td>
                                     <td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
                                 </tr>
+                                
+                                {% endfor %}
+
+
                             </tbody>
                         </table>
                     </div><!--//table-responsive-->
@@ -236,16 +246,30 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for order in initiated_orders_list %}
                                 
                                 <tr>
-                                    <td class="cell">#15342</td>
-                                    <td class="cell"><span class="truncate">Justo feugiat neque</span></td>
-                                    <td class="cell">Reina Brooks</td>
-                                    <td class="cell"><span class="cell-data">12 Oct</span><span class="note">04:23 PM</span></td>
-                                    <td class="cell"><span class="badge bg-danger">Cancelled</span></td>
-                                    <td class="cell">$59.00</td>
+                                    <td class="cell">#{{ order.order_number }}</td>
+                                    <td class="cell"><span class="truncate">Lorem ipsum dolor sit amet eget volutpat erat</span></td>
+                                    <td class="cell">{{ order.customer_name }}</td>
+                                    <td class="cell"><span>{{ order.order_date}}</span><span class="note">{{order.order_time}}</span></td>
+                                    
+                                    <td class="cell">
+                                       
+                                            <span class="badge bg-danger">
+                                        
+                                        
+                                            {{order.order_status}}
+
+                                        </span>
+                                    </td>
+                                    <td class="cell">{{order.payment_amount}}</td>
                                     <td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
                                 </tr>
+                                
+                                {% endfor %}
+
+
                                 
                             </tbody>
                         </table>

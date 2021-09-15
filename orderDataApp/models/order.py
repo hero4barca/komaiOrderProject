@@ -7,6 +7,20 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE, RESTRICT
 
+#models managers for order model
+#@TODO refactor -> fit with data set
+class InitiatedOrdersManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(order_status='Order Initiated')
+
+class PaidOrdersManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(order_status__in =('Shipped', 'Packaged'))
+
+class DeliveredOrdersManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(order_status ='Delivered')
+
 
 # Create your models here.
 
@@ -80,6 +94,13 @@ class Order(models.Model):
 
     payment_response = models.TextField(blank=True, null=True)
     payment_successful = models.BooleanField(default=False) # default val @TODO
+
+    # assign managers
+    objects = models.Manager() # The default manager.
+    initiated_orders = InitiatedOrdersManager()
+    paid_orders = PaidOrdersManager()
+    delivered_orders = DeliveredOrdersManager()
+
 
     def __str__(self) :
         return " | ".join([self.order_number, str(self.order_date), self.customer_name, 

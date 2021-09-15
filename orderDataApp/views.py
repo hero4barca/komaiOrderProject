@@ -104,10 +104,16 @@ def show_orders(request):
 
     try:
         orders = Order.objects.all()
+        initiated_orders = Order.initiated_orders.all()
+        paid_orders = Order.paid_orders.all()
+        delivered_orders = Order.delivered_orders.all()
     except Exception as err:
         raise err
 
-    return render (request, 'show_orders.html', {"orders_list": orders})
+    return render (request, 'show_orders.html', {"orders_list": orders,
+                                                    "initiated_orders_list": initiated_orders,
+                                                    "paid_orders_list": paid_orders,
+                                                    "delivered_orders_list": delivered_orders})
 
 
 
