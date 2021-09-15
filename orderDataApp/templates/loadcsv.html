@@ -1,16 +1,49 @@
-{% extends "base_template.html" %}
-{% block title %}
+{% extends "portal_account_base.html" %}
+{% load static %}
 
+{% block title %}
+    Load data
 {% endblock %}
-{% block content %}
+
+{% block app_content %}	
+
+<div class="container-xl">			    
+    <h1 class="app-page-title">Settings</h1>
+    <hr class="mb-4">
+
+    <div class="row g-4 settings-section">
+        <div class="col-12 col-md-4">
+            <h3 class="section-title">General</h3>
+            <div class="section-intro">Settings section intro goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit. <a href="help.html">Learn more</a></div>
+        </div>
+        <div class="col-12 col-md-8">
+            <div class="app-card app-card-settings shadow-sm p-4">
+                
+                <div class="app-card-body">
+
+                    {% load crispy_forms_tags %}
+                    <form action="/upload_csv_file/" method="post" enctype="multipart/form-data" class='settings-form'>
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <input type="submit" value="Submit">
+                    </form>
+                    
+                </div><!--//app-card-body-->
+                
+            </div><!--//app-card-->
+        </div>
+    </div><!--//row-->
+    <hr class="my-4">
+  
+</div><!--//container-fluid-->
+
+
+
+
+
 <div class="">
     
-    {% load crispy_forms_tags %}
-    <form action="/upload_csv_file/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form | crispy }}
-        <input type="submit" value="Submit">
-    </form>
+    
     
 </div>
 {% endblock %}
