@@ -98,6 +98,10 @@ def dashboard( request):
     return render (request, 'dashboard.html')
 
 
+def show_orders(request):
+    return render (request, 'show_orders.html')
+
+
 
 # ************** ordinary functions **************
 
