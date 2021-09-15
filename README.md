@@ -1,6 +1,8 @@
 # komaiOrderProject
 
-Simple django app for tracking and learing balances related to 1) orders and 2) seller as well as earning on komai
+- Simple django app for tracking and clearing balances related to orders, seller and their earnings.
+- 
+
 
 To setup
 1) clone this repostory 
